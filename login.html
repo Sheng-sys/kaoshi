@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="login.php" method="POST">
+        用户名 <input type="text" name="username"><br>
+        密码   <input type="password" name="pwd"><br>
+               <input type="submit" value="登录">
+    </form>
+</body>
+<script>
+    // alert(111)
+    var f = document.forms[0]
+    // console.log(f)
+    f.addEventListener('submit',function(ev){
+        ev.preventDefault()
+
+        var inputs = f.getElementsByTagName('input')
+        // console.log(inputs)
+        
+        var send_str = ""
+        for(var i=0;i<inputs.length;i++){
+            if(inputs[i].getAttribute('name') == null){
+                continue
+            }
+            var key = inputs[i].getAttribute('name')
+            var val = inputs[i].value
+            // console.log(val)
+
+            send_str += key+'='+val+'&'
+        }
+
+        send_str = send_str.substring(0,send_str.length-1)
+        // console.log(new_str)
+
+        var xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState === 4 && xhr.status === 200){
+                var json_str = xhr.responseText
+                console.log(json_str)
+                var data = JSON.parse(json_str)
+                // console.log(data)
+                if(data.erron == 0){
+                    alert(data.mgs)
+                    // alert(111)
+                    // sessionStorage.setItem('userinfo',send_str)
+                    window.location.href = 'students.html'
+                }else{
+                    alert(data.mgs)
+                }
+            }
+        }
+
+        xhr.open('POST','login.php')
+
+        xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+        
+        xhr.send(send_str)
+    })
+</script>
+</html>
